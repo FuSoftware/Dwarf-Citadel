@@ -104,15 +104,39 @@ std::vector<size_t> BreadthFirst::findWeightedPath(size_t start, size_t goal, Ve
             for(size_t i=0; i<n.size(); i++)
             {
                 size_t next = n[i];
-                if(came_from[next] == PATH_NOT_VISITED && map.getData(next) == true)
+                if(std::get<0>(came_from[next]) == PATH_NOT_VISITED && map.getData(next) > 0.0f)
                 {
                     frontier.push(next);
-                    came_from[next] = current;
+
+                    std::get<0>(came_from[next]) = current;
                 }
             }
         }
     }
 
 
-    return results;
+
+    return buildWeightedPath(start, goal, came_from);
+}
+
+std::vector<size_t> BreadthFirst::buildWeightedPath(size_t start, size_t goal, std::vector<std::tuple<size_t, float>> points)
+{
+    size_t c = goal;
+
+    std::vector<size_t> results;
+
+    if(std::get<0>(points[c]) == PATH_NOT_VISITED)
+    {
+        //Couldn't reach the goal
+        return std::vector<size_t>(0);
+    }
+    else
+    {
+        do{
+          c = std::get<0>(points[c]);
+          results.push_back(c);
+        }while(c != start);
+
+        return results;
+    }
 }
