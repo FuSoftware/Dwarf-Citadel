@@ -3,6 +3,6 @@
 
 int main()
 {
-    Tests::weightedVectorTest();
+    Tests::booleanVectorTest();
     return 0;
 }

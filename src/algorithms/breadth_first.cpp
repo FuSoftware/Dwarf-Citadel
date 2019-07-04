@@ -23,7 +23,7 @@ std::vector<size_t> BreadthFirst::findPath(size_t start, size_t goal, Vector3D<b
     std::queue<size_t> frontier;
     frontier.push(start);
 
-    std::vector<size_t> came_from(map.size(), PATH_NOT_VISITED);
+    std::vector<size_t> came_from(map.size(), PathAlgorithm::PATH_NOT_VISITED);
     came_from[start] = PATH_START;
 
     while(!frontier.empty())

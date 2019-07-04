@@ -91,10 +91,11 @@ void Tests::booleanVectorTest()
     booleanVectorTest(vec);
 
     vec.setData(std::vector<bool>(vec.size(), true));
-    vec.setArea(3,3,2,8,false);
-    vec.setArea(20,4,2,12, false);
-    vec.setArea(20,0,2,6,false);
-    vec.setArea(20,5,6,2,false);
+    vec.setArea(0,1,29,1,false);
+    vec.setArea(1,4,29,1, false);
+    vec.setArea(0,7,29,1,false);
+    vec.setArea(1,10,29,1,false);
+    vec.setArea(0,13,29,1,false);
 
     booleanVectorTest(vec);
 }

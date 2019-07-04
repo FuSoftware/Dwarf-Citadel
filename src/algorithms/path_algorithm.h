@@ -19,7 +19,8 @@ public:
 
 
 protected:
-    static const size_t PATH_START = static_cast<size_t>(-1);
-    static const size_t PATH_NOT_VISITED = static_cast<size_t>(-2);
+    static const size_t PATH_START;
+    static const size_t PATH_NOT_VISITED;
 };
+
 #endif //PATH_ALGORITHM_H
