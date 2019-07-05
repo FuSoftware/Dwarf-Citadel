@@ -102,12 +102,43 @@ void Tests::booleanVectorTest()
 
 void Tests::weightedVectorTest()
 {
-    Vector3D<float> vec(30, 15, 1);
-    vec.setData(std::vector<float>(vec.size(), 1.0f));
+    Vector3D<float> vec(6,6,1);
+    vec.setData({
+        1.0f, 0.5f, 0.5f, 1.0f, 0.8f, 1.0f,
+        1.0f, 0.5f, 1.0f, 1.0f, 0.5f, 1.0f,
+        1.0f, 0.5f, 1.0f, 0.3f, 0.2f, 1.0f,
+        1.0f, 0.5f, 0.2f, 0.7f, 0.0f, 1.0f,
+        1.0f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+    });
 
     size_t h = vec.height();
     size_t w = vec.width();
 
     BreadthFirst algorithm;
     std::vector<size_t> path = algorithm.findWeightedPath(Point3D(0, 0, 0), Point3D(w-1, h-1, 0), vec);
+
+    Vector3D<bool> result(w, h, 1);
+
+    for(size_t point : path)
+    {
+        result.setData(point, true);
+    }
+
+    for(size_t y=0; y < vec.height(); y++)
+    {
+        for(size_t x=0; x < vec.width(); x++)
+        {
+            if(vec.getData(x,y,0) > 0.0f)
+            {
+                std::cout << (result.getData(x, y, 0) ? "X" : "\u2591");
+            }
+            else
+            {
+                std::cout << "\u2588";
+            }
+
+        }
+        std::cout << std::endl;
+    }
 }
