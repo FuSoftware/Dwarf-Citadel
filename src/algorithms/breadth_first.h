@@ -18,6 +18,6 @@ public:
 
 protected:
     std::vector<size_t> buildPath(size_t start, size_t goal, std::vector<size_t> points);
-    std::vector<size_t> buildWeightedPath(size_t start, size_t goal, std::vector<std::tuple<size_t, float>> points);
+    std::vector<size_t> buildWeightedPath(size_t start, size_t goal, std::vector<size_t> points);
 };
 #endif //BREADTH_FIRST_H

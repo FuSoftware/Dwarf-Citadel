@@ -102,21 +102,42 @@ void Tests::booleanVectorTest()
 
 void Tests::weightedVectorTest()
 {
-    Vector3D<float> vec(6,6,1);
-    vec.setData({
-        1.0f, 0.5f, 0.5f, 1.0f, 0.8f, 1.0f,
-        1.0f, 0.5f, 1.0f, 1.0f, 0.5f, 1.0f,
-        1.0f, 0.5f, 1.0f, 0.3f, 0.2f, 1.0f,
-        1.0f, 0.5f, 0.2f, 0.7f, 0.0f, 1.0f,
-        1.0f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+    simpleWeightedVectorTest(6,6,
+    {
+        1.0f, 20.f, 1.0f, 1.0f, 2.0f, 1.0f,
+        1.0f, 20.f, 1.0f, 1.0f, 2.0f, 1.0f,
+        1.0f, 20.f, 1.0f, 4.0f, 5.0f, 1.0f,
+        1.0f, 15.f, 1.0f, 3.0f, -1.f, 1.0f,
+        1.0f, 10.f, 1.0f, 1.0f, -1.f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f, -1.f, 1.0f,
     });
 
-    size_t h = vec.height();
-    size_t w = vec.width();
+    simpleWeightedVectorTest(10,10,
+    {
+        1.0f, 20.f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 20.f, 1.0f, 1.0f,
+        1.0f, 20.f, 1.0f, 1.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 4.0f, 5.0f, 1.0f, 1.0f, 20.f, 1.0f, 1.0f,
+        20.f, 15.f, 1.0f, 3.0f, -1.f, 1.0f, 1.0f, 20.f, 1.0f, 1.0f,
+        1.0f, 10.f, 20.f, 20.f, -1.f, 20.f, 20.f, 20.f, 20.f, 1.0f,
+        1.0f, 20.f, 1.0f, 1.0f, -1.f, 1.0f, 1.0f, 20.f, 1.0f, 1.0f,
+        1.0f, 20.f, 1.0f, 4.0f, -1.f, 20.f, 1.0f, 20.f, 20.f, 20.f,
+        1.0f, 15.f, 1.0f, 3.0f, -1.f, 20.f, 1.0f, 20.f, 1.0f, 1.0f,
+        1.0f, 10.f, 1.0f, 1.0f, 1.0f, 20.f, 1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f, -1.f, 20.f, 1.0f, 20.f, 1.0f, 1.0f,
+    });
+}
+
+void Tests::simpleWeightedVectorTest(size_t w, size_t h, std::vector<float> data)
+{
+    Vector3D<float> vec(w, h,1);
+    vec.setData(data);
+
+    auto time_init = std::chrono::steady_clock::now();
 
     BreadthFirst algorithm;
     std::vector<size_t> path = algorithm.findWeightedPath(Point3D(0, 0, 0), Point3D(w-1, h-1, 0), vec);
+
+    auto time_search = std::chrono::steady_clock::now();
 
     Vector3D<bool> result(w, h, 1);
 
@@ -141,4 +162,10 @@ void Tests::weightedVectorTest()
         }
         std::cout << std::endl;
     }
+
+    auto time_rendering = std::chrono::steady_clock::now();
+
+    std::cout << "   Search : " << std::chrono::duration_cast<std::chrono::microseconds>(time_search - time_init).count()       << "us" << std::endl;
+    std::cout << "Rendering : " << std::chrono::duration_cast<std::chrono::microseconds>(time_rendering - time_search).count()  << "us" << std::endl;
+    std::cout << "    Total : " << std::chrono::duration_cast<std::chrono::microseconds>(time_rendering - time_init).count()   << "us" << std::endl << std::endl;
 }

@@ -1,6 +1,7 @@
 #include "breadth_first.h"
 #include <queue>
 #include <tuple>
+#include <iomanip>
 
 BreadthFirst::BreadthFirst()
 {
@@ -79,18 +80,22 @@ std::vector<size_t> BreadthFirst::buildPath(size_t start, size_t goal, std::vect
 //TODO: Implement
 std::vector<size_t> BreadthFirst::findWeightedPath(size_t start, size_t goal, Vector3D<float> map)
 {
-    typedef std::tuple<size_t, float> WeightedPoint;
-    std::vector<size_t> results;
+    std::vector<size_t> points;
 
     std::queue<size_t> frontier;
     frontier.push(start);
 
-    WeightedPoint def = std::make_tuple(PATH_NOT_VISITED, 0.0f);
-    std::vector<WeightedPoint> came_from(map.size(), def);
+    std::tuple<size_t, float> def = std::make_tuple(PATH_NOT_VISITED, 0.0f);
+    std::vector<std::tuple<size_t, float>> came_from(map.size(), def);
+    std::get<0>(came_from[start]) = 0.0f;
+
+    size_t cycles = 0;
 
     while(!frontier.empty())
     {
+        cycles++;
         size_t current = frontier.front();
+        float travel_time = std::get<1>(came_from[current]) + map.getData(current);
         frontier.pop();
 
         if(current == goal)
@@ -104,34 +109,56 @@ std::vector<size_t> BreadthFirst::findWeightedPath(size_t start, size_t goal, Ve
             for(size_t i=0; i<n.size(); i++)
             {
                 size_t next = n[i];
-                if(map.getData(next) > 0.0f)
+                if(map.getData(next) >= 0.0f)
                 {
-                    if(std::get<0>(came_from[next]) == PATH_NOT_VISITED)
+                    if((std::get<0>(came_from[next]) == PATH_NOT_VISITED) || (std::get<1>(came_from[next]) > travel_time))
                     {
+                        std::get<1>(came_from[next]) = travel_time;
+                        std::get<0>(came_from[next]) = current;
                         frontier.push(next);
-                        std::get<1>(came_from[next]) = map.getData(current);
-                        std::get<0>(came_from[next]) = current;
-                    }
-                    else if (std::get<1>(came_from[next]) < map.getData(current))
-                    {
-                        std::get<1>(came_from[next]) = map.getData(current);
-                        std::get<0>(came_from[next]) = current;
                     }
                 }
             }
         }
     }
 
-    return buildWeightedPath(start, goal, came_from);
+
+
+    for(std::tuple<size_t, float> p : came_from)
+    {
+        points.push_back(std::get<0>(p));
+    }
+
+    std::vector<size_t> result = buildWeightedPath(start, goal, points);
+
+    //Debug
+    /*
+    for(size_t y=0; y<map.height(); y++)
+    {
+        for(size_t x=0; x<map.width(); x++)
+        {
+            std::cout << std::setw(3) << map.getData(x,y,0);
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "Processed in " << cycles << " cycles" << std::endl;
+    float steps = 0.0f;
+    for(size_t p : result) steps += map.getData(p);
+    std::cout << "Time : " << steps << " steps" << std::endl << std::endl;
+    */
+
+    return result;
 }
 
-std::vector<size_t> BreadthFirst::buildWeightedPath(size_t start, size_t goal, std::vector<std::tuple<size_t, float>> points)
+std::vector<size_t> BreadthFirst::buildWeightedPath(size_t start, size_t goal, std::vector<size_t> points)
 {
     size_t c = goal;
 
     std::vector<size_t> results;
 
-    if(std::get<0>(points[c]) == PATH_NOT_VISITED)
+    if(points[c] == PATH_NOT_VISITED)
     {
         //Couldn't reach the goal
         return std::vector<size_t>(0);
@@ -139,7 +166,7 @@ std::vector<size_t> BreadthFirst::buildWeightedPath(size_t start, size_t goal, s
     else
     {
         do{
-          c = std::get<0>(points[c]);
+          c = points[c];
           results.push_back(c);
         }while(c != start);
 
