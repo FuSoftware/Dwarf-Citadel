@@ -8,6 +8,8 @@ SOURCES += \
         algorithms/breadth_first.cpp \
         algorithms/path_algorithm.cpp \
         engine/entities/entity.cpp \
+        engine/processing/recipe.cpp \
+        engine/processing/workshop.cpp \
         engine/tasks/task.cpp \
         main.cpp \
         map/collision_map.cpp \
@@ -18,6 +20,8 @@ HEADERS += \
     algorithms/breadth_first.h \
     algorithms/path_algorithm.h \
     engine/entities/entity.h \
+    engine/processing/recipe.h \
+    engine/processing/workshop.h \
     engine/tasks/task.h \
     map/collision_map.h \
     tests.h \
