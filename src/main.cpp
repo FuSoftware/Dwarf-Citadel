@@ -3,6 +3,6 @@
 
 int main()
 {
-    Tests::weightedVectorTest();
+    Tests::simpleTaskTest();
     return 0;
 }

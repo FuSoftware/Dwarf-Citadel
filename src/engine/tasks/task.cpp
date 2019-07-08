@@ -1,8 +1,11 @@
 #include "task.h"
 
-Task::Task(std::string id) : id(id)
-{
+#include <iomanip>
+#include <iostream>
 
+Task::Task(std::string id, Task* parent) : id(id)
+{
+    if(parent != nullptr) parent->addSubtask(this);
 }
 
 
@@ -36,4 +39,10 @@ void Task::update()
         this->current_completion++;
         if(this->current_completion >= this->completion_time) this->completed = true;
     }
+}
+
+void Task::printTree(int level)
+{
+    std::cout << std::setw(level*4) << " " << "-" << this->id << "(" << (this->isCompleted() ? "Complete" : "Pending") << ")" << std::endl;
+    for (Task*t : this->subtasks) t->printTree(level + 1);
 }

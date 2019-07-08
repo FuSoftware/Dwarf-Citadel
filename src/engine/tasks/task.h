@@ -15,11 +15,12 @@ enum TaskType
 class Task
 {
 public:
-    Task(std::string id);
+    Task(std::string id, Task* parent = nullptr);
     void addSubtask(Task* t);
     bool isCompleted();
     void complete();
     void update();
+    void printTree(int level = 0);
 
 protected:
     std::string id;

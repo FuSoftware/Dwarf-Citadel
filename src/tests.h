@@ -16,6 +16,8 @@ public:
     static void weightedVectorTest();
     static void simpleWeightedVectorTest(size_t w, size_t h, std::vector<float> data);
 
+    static void simpleTaskTest();
+
 private:
 };
 

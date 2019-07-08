@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include "utils/vector3D.h"
 #include "algorithms/breadth_first.h"
+#include "engine/tasks/task.h"
 #include <iostream>
 #include <chrono>
 
@@ -168,4 +169,47 @@ void Tests::simpleWeightedVectorTest(size_t w, size_t h, std::vector<float> data
     std::cout << "   Search : " << std::chrono::duration_cast<std::chrono::microseconds>(time_search - time_init).count()       << "us" << std::endl;
     std::cout << "Rendering : " << std::chrono::duration_cast<std::chrono::microseconds>(time_rendering - time_search).count()  << "us" << std::endl;
     std::cout << "    Total : " << std::chrono::duration_cast<std::chrono::microseconds>(time_rendering - time_init).count()   << "us" << std::endl << std::endl;
+}
+
+void Tests::simpleTaskTest()
+{
+    auto time_1 = std::chrono::steady_clock::now();
+    std::cout << "Single Task" << std::endl;
+    Task t("Task 1");
+    t.complete();
+    t.printTree();
+
+    auto time_2 = std::chrono::steady_clock::now();
+    std::cout << "Task with two children" << std::endl;
+    Task t1("Task 1");
+    Task t11("Task 1-1");
+    Task t12("Task 1-2");
+    t1.addSubtask(&t11);
+    t1.addSubtask(&t12);
+    t11.complete();
+    t12.complete();
+    t1.printTree();
+
+    auto time_3 = std::chrono::steady_clock::now();
+    std::cout << "Deeper Task tree" << std::endl;
+    Task tt1("Task 1");
+    Task tt11("Task 1-1", &tt1);
+    Task tt111("Task 1-1-1", &tt11);
+    Task tt112("Task 1-1-2", &tt11);
+    Task tt113("Task 1-1-3", &tt11);
+
+    Task tt12("Task 1-2", &tt1);
+    Task tt121("Task 1-2-1", &tt12);
+    Task tt122("Task 1-2-2", &tt12);
+    Task tt1221("Task 1-2-2-1", &tt122);
+
+    tt112.complete();
+    tt1221.complete();
+
+    tt1.printTree();
+    auto time_4 = std::chrono::steady_clock::now();
+
+    std::cout << "  Single : " << std::chrono::duration_cast<std::chrono::microseconds>(time_2 - time_1).count()  << "us" << std::endl;
+    std::cout << "Children : " << std::chrono::duration_cast<std::chrono::microseconds>(time_3 - time_2).count()  << "us" << std::endl;
+    std::cout << "    Deep : " << std::chrono::duration_cast<std::chrono::microseconds>(time_4 - time_3).count()  << "us" << std::endl << std::endl;
 }
